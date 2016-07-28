@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- <meta charset="utf-8">-->
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>React Tutorial</title>
+    <!-- Not present in the tutorial. Just for basic styling. -->
+    <link rel="stylesheet" href="css/base.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.16/browser.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
+	
+	
+	<script src = "https://cdn.wilddog.com/js/client/current/wilddog.js" ></script> <!-- 引入野狗js -->
+	<script src="scripts/index.js"></script><!--引入主要逻辑js -->
+
+	
+
+<script type="text/javascript" src="js/jquery.js"></script> 
+<script type="text/javascript" src="js/highcharts.js"></script>
+
+<script type="text/javascript">
+$(function () {                                                                     
+$(document).ready(function() {                                                  
+	Highcharts.setOptions({                                                     
+		global: {                                                               
+			useUTC: false                                                       
+		}                                                                       
+	});                                                                         
+																				
+	var chart;                                                                  
+	$('#container').highcharts({                                                
+		chart: {                                                                
+			type: 'spline',                                                     
+			animation: Highcharts.svg, // don't animate in old IE               
+			marginRight: 10,                                                    
+			events: {                                                           
+				load: function() {                                              
+																				
+					// set up the updating of the chart each second             
+					var series = this.series[0]; 
+					setInterval(function() {                                    
+						var x = (new Date()).getTime(), // current time      
+							y = getPersonRankNum();
+							console.log("==================================y=====......"+y);
+						if (y == 0) {
+							series.name = "未知";
+							series.scrore = "未知";
+							series.num = "未知";//名次	
+						}else{
+							series.addPoint([x, y], true, true);   
+							series.name = getPersonName();
+							series.scrore = getPersonScore();
+							series.num = y;//名次							
+						}
+					}, 5000);    				
+				}                                                               
+			}                                                                   
+		},                                                                      
+		title: {                                                                
+			text: '个人即时排名--5秒'                                            
+		},                                                                      
+		xAxis: {                                                                
+			type: 'datetime',                                                   
+			tickPixelInterval: 100                                              
+		},                                                                      
+		yAxis: {                                                                
+			title: {                                                            
+				text: '个人即时排名--5秒'                                                   
+			},                                                                  
+			plotLines: [{                                                       
+				value: 0,                                                       
+				width: 1,                                                       
+				color: '#808080'                                                
+			}]                                                                  
+		},                                                                      
+		tooltip: {                                                              
+			formatter: function() {                                             
+					return '<b>'+'Name:'+ this.series.name +'</b><br/>'+    
+'<b>'+'Score:'+ this.series.scrore +'</b><br/>'+   
+'<b>'+'Num:'+ this.series.num +'</b><br/>'+   					
+					Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'
+					//+Highcharts.numberFormat(this.y, 2);                         
+			}                                                                   
+		},                                                                      
+		legend: {                                                               
+			enabled: false                                                      
+		},                                                                      
+		exporting: {                                                            
+			enabled: false                                                      
+		},                                                                      
+		series: [{                                                              
+			name: '未知',  
+			scrore: '未知',
+			num: '未知',
+			//if (num=='--'){
+			
+			//}else{
+				data: (function() {                                                 
+					// generate an array of random data                             
+					var data = [],                                                  
+						time = (new Date()).getTime(),                              
+						i;        
+						for (i = -15; i <= 0; i++) {  				
+							data.push({                                                 
+								x: time + i * 1000,                                     
+								y: 0                                        
+							}); 
+						}				
+					return data;                                                    
+				})() 
+			//}			
+		}]                                                                      
+	});                                                                         
+});                                                                             
+																				
+});               
+</script>
+	
+  </head>
+  <body>
+  <!-- Test Connect。。。。-->
+  <div class="center" style="display:none">
+	<textarea style="width:0%; height: 0" id="txr"> 
+	</textarea>
+	
+</div>
+  <div class="center2" style="display:none">
+  
+	<textarea style="width:0%; height: 0%" id="tx"> 
+	</textarea>
+
+	</div>
+<br>
+	
+<script type="text/babel">
+
+
+var data = [
+];
+
+
+var person;
+
+
+
+var CommentBox = React.createClass({
+
+  handleCommentSubmit: function(comment) {
+  //alert("sdf");
+	var username = document.getElementById("username").value;
+
+
+	while(onRank()){
+		data = getInfo();
+		this.setState({data:data});
+		break;
+	}
+	
+  },
+  getInitialState: function() {
+    return {data: []};
+  },
+  componentDidMount: function() {
+
+	this.handleCommentSubmit();
+    setInterval(this.handleCommentSubmit, this.props.pollInterval);
+  },
+  render: function() {
+    return (
+
+		
+      <div className="CommentBox">
+        
+		
+		<div>
+			<table class="center1">
+			<tr>
+				<CommentForm onCommentSubmit={this.handleCommentSubmit} />
+			</tr>
+			</table>
+		</div>
+		<br/>
+		<br/>
+		<div>
+			<table class="center1">
+			<tr>
+				<h2>Rank_Infos</h2>
+			</tr>
+			</table>
+		</div>
+		
+       
+		
+		<div>
+			<table class="center1">
+			<tr>
+				<h3>{getPersonInfo()}</h3>
+			</tr>
+			</table>
+		
+			
+		</div>
+		
+		<CommentList data={data} />
+
+
+		 <br/>
+		<br/>
+		
+		<div>
+			<table class="center1">
+			<tr>
+				<h2>Personal_Rank_Infos</h2>
+			</tr>
+			</table>
+		</div>
+
+	
+    
+      </div>
+    );
+  }
+});
+
+
+
+
+
+var CommentForm = React.createClass({
+  getInitialState: function() {
+    return {author: '', text: ''};
+  },
+  handleAuthorChange: function(e) {
+    this.setState({author: e.target.value});
+  },
+  handleTextChange: function(e) {
+    this.setState({text: e.target.value});
+  },
+  handleSubmit: function(e) {
+    e.preventDefault();
+    var author = this.state.author.trim();
+    var text = this.state.text.trim();
+	
+    if (!text || !author) {
+      
+    }
+	
+    this.props.onCommentSubmit({author: author, text: text});
+    //this.setState({author: '', text: '99'}); //清空
+	
+	
+
+  },
+  render: function() {
+    return (
+      <form className="commentForm" onSubmit={this.handleSubmit}>
+        <input
+          type="text"
+          placeholder="Your name"
+          value={this.state.author}
+          onChange={this.handleAuthorChange}
+		  id="username"
+        />
+        <input
+          type="text"
+          placeholder="Your score"
+          value={this.state.text}
+          onChange={this.handleTextChange}
+		  id="score"
+        />
+        <input type="submit" value="Post" />
+      </form>
+    );
+  }
+});
+
+
+var Comment = React.createClass({
+  rawMarkup: function() {
+    var md = new Remarkable();
+    var rawMarkup = md.render(this.props.children.toString());
+    return { __html: rawMarkup };
+  },
+
+  render: function() {
+    return (
+      <div className="comment">
+      
+        <span dangerouslySetInnerHTML={this.rawMarkup()} />
+	
+      </div>
+    );
+  }
+});
+
+
+
+
+var CommentList = React.createClass({
+  render: function() {
+    var commentNodes = this.props.data.map(function(comment) {
+      return (
+
+		
+			<tr className="over">
+				<td>
+				  <Comment author={comment.author} key={comment.id}>{comment.id} 
+				  </Comment>
+				</td>
+				<td>
+				<Comment author={comment.author} key={comment.id}>
+					{comment.author}  
+				</Comment>
+				</td>
+				<td>
+					<Comment author={comment.author} key={comment.id}>
+					{comment.text} 
+				</Comment>
+				</td>
+				
+				
+			</tr>
+
+		
+      );
+    });
+    return (
+      <div className="commentList">
+
+		<table className="bordered">
+			<th>
+				排名
+			</th>
+			<th>
+				姓名
+			</th>
+			<th>
+				积分
+			</th>
+			
+        {commentNodes}
+		
+		</table>
+
+      </div>
+    );
+  }
+});
+
+
+
+
+ReactDOM.render(
+  <CommentBox  data={data} pollInterval={5000}/>,
+  document.getElementById('content')
+);
+
+
+
+
+
+
+</script>
+
+
+
+<div id="content"></div>
+ <div id="container" class="move"></div>
+<div style="text-align:center;clear:both;opacity:0.6;">
+<script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
+<script src="/follow.js" type="text/javascript"></script>
+</div>
+
+
+
+</body>
+</html>
